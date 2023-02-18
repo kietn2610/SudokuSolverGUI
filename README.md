@@ -1,7 +1,12 @@
 # SudokuSolverGUI
-Created a sudoku solver system using the backtracking algorithm with an interactive GUI interface.
 
-The game will tell the user whether their answer for each box is correct or incorrect and when the user prompts to, the algorithm will solve the sudoku board. 
+Technologies: Python, Pygame, Request
+
+Developed a Sudoku solver system utilizing the backtracking algorithm and an interactive GUI.
+
+Employed Pygame to construct an immersive user interface featuring graphical elements, event handling systems, and advanced user input features
+
+Conducted extensive testing and debugging to ensure the system was stable, efficient, and error-free
 
 Sample:
 
