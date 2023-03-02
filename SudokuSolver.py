@@ -2,7 +2,7 @@ import pygame
 import time
 pygame.font.init()
 
-
+# Make a sudoku board
 class Grid:
     board = [
         [7, 8, 0, 4, 0, 0, 1, 2, 0],
@@ -16,9 +16,12 @@ class Grid:
         [0, 4, 9, 2, 0, 6, 0, 0, 7]
     ]
 
+    """Takes in the rows, cols, width, height, and win parameters 
+    which are used to initialize other attributes of the class."""
     def __init__(self, rows, cols, width, height, win):
         self.rows = rows
         self.cols = cols
+        # two-dimensional list of Cube objects, which represent the individual cells of the board.
         self.cubes = [[Cube(self.board[i][j], i, j, width, height) for j in range(cols)] for i in range(rows)]
         self.width = width
         self.height = height
@@ -27,27 +30,42 @@ class Grid:
         self.selected = None
         self.win = win
 
+    # Update the model attribute to reflect the current state of the board.
     def update_model(self):
         self.model = [[self.cubes[i][j].value for j in range(self.cols)] for i in range(self.rows)]
 
+    # Takes in a val parameter which represents the value to be placed on the board at the currently selected cell.
     def place(self, val):
         row, col = self.selected
+        # Checks if the selected cell is empty and sets the value to val if it is.
         if self.cubes[row][col].value == 0:
             self.cubes[row][col].set(val)
-            self.update_model()
+            self.update_model() # update the model attribute
 
+            """ Check if the new value is valid by calling the valid function
+                If the value is valid and the board can be solved using the solve function
+                valid and solve function are defined later on
+                """
             if valid(self.model, val, (row,col)) and self.solve():
                 return True
+            # Otherwise, it sets the cell value back to 0 and returns False.
             else:
                 self.cubes[row][col].set(0)
                 self.cubes[row][col].set_temp(0)
                 self.update_model()
                 return False
 
+    """ Sets the temporary value of the currently selected cell to the given val. 
+    This is used to display a temporary value on the cell while the player is 
+    deciding on the final value to place there. """
     def sketch(self, val):
         row, col = self.selected
         self.cubes[row][col].set_temp(val)
 
+    """Draw the Sudoku board on the screen. 
+    First draws the grid lines by looping through the rows and columns of the board 
+    and drawing horizontal and vertical lines with different thickness 
+    depending on whether the line is a major line (i.e. every third line) or a minor line."""
     def draw(self):
         # Draw Grid Lines
         gap = self.width / 9
@@ -59,11 +77,17 @@ class Grid:
             pygame.draw.line(self.win, (0,0,0), (0, i*gap), (self.width, i*gap), thick)
             pygame.draw.line(self.win, (0, 0, 0), (i * gap, 0), (i * gap, self.height), thick)
 
-        # Draw Cubes
+        # Loops through each cell in the cubes list
+        # and calls the draw method of the Cube object to draw the cell on the screen.
         for i in range(self.rows):
             for j in range(self.cols):
                 self.cubes[i][j].draw(self.win)
 
+    """Loops through all the cells in the cubes list and sets their selected attribute to False 
+    to reset the selection of all other cells.
+    t then sets the selected attribute of the specified cell to True 
+    and sets the selected attribute of the Grid object to the tuple (row, col) 
+    to represent the currently selected cell.   FIX THISSSSS"""
     def select(self, row, col):
         # Reset all other
         for i in range(self.rows):
